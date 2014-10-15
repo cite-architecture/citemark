@@ -19,9 +19,16 @@ is a reference to content that should be incorporated into the source document.
 </p>
 
 <h2>Quoting content</h2>
-<p>
-The string <code>!{</code>
-opens a quotation pattern.
+<p>The syntax for quotation is inspired by markdown's <code>!</code>
+notation
+for embedding image content in a document.
+A quotation is composed of two parts: a label or caption, and a
+reference to a defined link.
+The label or caption is opened by
+<code>!{</code> and closed by <code>}</code>.
+The immediately following link reference is opened by <code>[</code>
+and
+closed by <code>]</code>.
 </p>
 
 <div class="example">
@@ -32,7 +39,10 @@ opens a quotation pattern.
   
   <strong concordion:assertTrue="hasQuote(#quote)">contains a quote</strong>.
   
+  </p>
 
+  <p>
+  Something should <strong concordion:assertTrue="processLine(#quote)">happen here</strong>.
   </p>
 </div>
 
@@ -49,8 +59,17 @@ opens a citation pattern.
   of text}[1]. </code>
   <strong concordion:assertTrue="hasCite(#cite)">contains a citation</strong>
   </p>
+
+<p>Standard markdown for cited image like this line
+  <code concordion:set="#img">Embed image ![caption][1]. </code>
+  is
+<strong concordion:assertTrue="mdOK(#img)">
+  passed through unchanged</strong>.
+  </p>
+  
 </div>
 
+<h2>Mapping URNs to services</h2>
 <p>Configuration allows distinction of extensions such as CITE images.</p>
 
 </body>

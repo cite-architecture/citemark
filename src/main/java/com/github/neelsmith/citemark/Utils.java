@@ -20,8 +20,7 @@ package com.github.neelsmith.citemark;
  * 
  * @author René Jeschke <rene_jeschke@yahoo.de>
  */
-class Utils
-{
+public class Utils {
     /** Random number generator value. */
     private static int RND = (int)System.nanoTime();
 
@@ -158,16 +157,13 @@ class Utils
      *            Starting position.
      * @return The new position or -1 if this is no valid markdown link ID.
      */
-    public final static int readMdLinkId(final StringBuilder out, final String in, final int start)
-    {
+    public final static int readMdLinkId(final StringBuilder out, final String in, final int start)   {
         int pos = start;
         int counter = 1;
-        while (pos < in.length())
-        {
+        while (pos < in.length()) {
             final char ch = in.charAt(pos);
             boolean endReached = false;
-            switch (ch)
-            {
+            switch (ch)  {
             case '\n':
                 out.append(' ');
                 break;
@@ -188,9 +184,9 @@ class Utils
             if (endReached) break;
             pos++;
         }
-
         return (pos == in.length()) ? -1 : pos;
     }
+
 
     /**
      * Reads characters until any 'end' character is encountered, ignoring
@@ -364,78 +360,4 @@ class Utils
         }
     }
 
-    /**
-     * Reads an XML element.
-     * 
-     * @param out
-     *            The StringBuilder to write to.
-     * @param in
-     *            Input String.
-     * @param start
-     *            Starting position.
-     * @param safeMode
-     *            Whether to escape unsafe HTML tags or not
-     * @return The new position or -1 if this is no valid XML element.
-     */
-    /*
-    public final static int readXML(final StringBuilder out, final String in, final int start, final boolean safeMode)
-    {
-        int pos;
-        final boolean isCloseTag;
-        try
-        {
-            if (in.charAt(start + 1) == '/')
-            {
-                isCloseTag = true;
-                pos = start + 2;
-            }
-            else if (in.charAt(start + 1) == '!')
-            {
-                out.append("<!");
-                return start + 1;
-            }
-            else
-            {
-                isCloseTag = false;
-                pos = start + 1;
-            }
-            if (safeMode)
-            {
-                final StringBuilder temp = new StringBuilder();
-                pos = readXMLUntil(temp, in, pos, ' ', '/', '>');
-                if (pos == -1) return -1;
-                final String tag = temp.toString().trim().toLowerCase();
-                if (HTML.isUnsafeHtmlElement(tag))
-                {
-                    out.append("&lt;");
-                    if (isCloseTag) out.append('/');
-                    out.append(temp);
-                }
-            }
-            else
-            {
-                out.append('<');
-                if (isCloseTag) out.append('/');
-                pos = readXMLUntil(out, in, pos, ' ', '/', '>');
-            }
-            if (pos == -1) return -1;
-            pos = readXMLUntil(out, in, pos, '/', '>');
-            if (in.charAt(pos) == '/')
-            {
-                out.append(" /");
-                pos = readXMLUntil(out, in, pos + 1, '>');
-                if (pos == -1) return -1;
-            }
-            if (in.charAt(pos) == '>')
-            {
-                out.append('>');
-                return pos;
-            }
-        }
-        catch (StringIndexOutOfBoundsException e)
-        {
-            return -1;
-        }
-        return -1;
-	}*/
 }

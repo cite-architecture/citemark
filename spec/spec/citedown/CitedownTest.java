@@ -8,6 +8,15 @@ import org.concordion.integration.junit3.ConcordionTestCase;
 public class CitedownTest extends ConcordionTestCase {
 
 
+    // check that marrkdown passed through unchanged
+    public boolean mdOK(String markdown) {
+	StringBuilder builtMarkdown = new StringBuilder();
+	Emitter emitter = new Emitter();
+        int res = emitter.recursiveEmitLine(builtMarkdown,markdown,0,MarkToken.NONE);
+	System.err.println("BUILT: " + builtMarkdown.toString());
+	return (builtMarkdown.toString().equals(markdown));
+    }
+
     public boolean hasQuote(String citedown) {
 	Emitter emitter = new Emitter();
         int pos = 0;
@@ -21,6 +30,18 @@ public class CitedownTest extends ConcordionTestCase {
         }
 	return false;
     }
+
+
+
+
+    public boolean processLine(String citedown) {
+	Emitter emitter = new Emitter();
+        int res = emitter.recursiveEmitLine(new StringBuilder(),citedown,0,MarkToken.NONE);
+
+	return false;
+    }
+
+
 
 
     public boolean hasCite(String citedown) {

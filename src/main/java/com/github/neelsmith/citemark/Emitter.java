@@ -1,6 +1,6 @@
 /*
  * Based on com.github.rjeschke.txtmark.Emitter,
- * copyright (C) 2011 René Jeschke <rene_jeschke@yahoo.de>
+ * copyright (c) 2011 René Jeschke <rene_jeschke@yahoo.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -268,31 +268,50 @@ public class Emitter
      * @return The position of the matching Token or -1 if token was NONE or no
      *         Token could be found.
      */
-    private int recursiveEmitLine(final StringBuilder out, final String in, int start, MarkToken token)
-    {
-        int pos = start, a, b;
+    public int recursiveEmitLine(final StringBuilder out, final String in, int start, MarkToken token) {
+        int pos = start, idx;
         final StringBuilder temp = new StringBuilder();
-        while(pos < in.length())
-        {
+        while(pos < in.length()) {
             final MarkToken mt = this.getToken(in, pos);
-            if (token != MarkToken.NONE)
+            if (token != MarkToken.NONE) {
+		System.err.println ("At char " + pos + ", returinging with buildder at " + out.toString());
                 return pos;
-
-	    if ((mt == MarkToken.IMAGE) || (mt == MarkToken.LINK)) {
+	    }
+	    //	    if ((mt == MarkToken.IMAGE) || (mt == MarkToken.LINK)) {
+	    if (mt == MarkToken.LINK) {
 		temp.setLength(0);
-                b = this.checkLink(temp, in, pos, mt);
-                if(b > 0)  {
+                idx = this.checkLink(temp, in, pos, mt);
+                if (idx > 0)  {
                     out.append(temp);
-                    pos = b;
+                    pos = idx;
                 } else {
                     out.append(in.charAt(pos));
                 }
 
+	    }  else if (mt == MarkToken.QUOTE) {
+		// distinguish IMAGE from QUOTE
+		if (in.charAt(pos + 1)  == '{') {
+		    out.append("[");
+		    pos = pos + 1;
+		} else if (in.charAt(pos + 1) == '[') {
+		    out.append("![");
+		    pos = pos + 1;
+		} else {
+		    // ???
+		}
+
+		int nxt = Utils.readUntil(out, in, pos + 1, '}' );
+		System.err.println("Found '}' at " + nxt);
+		out.append("]");
+		pos = nxt;
+
 	    } else {
+		System.err.println ("At char " + pos + ", handle token " + mt.toString());
                 out.append(in.charAt(pos));
 	    }
             pos++;
         }
+	System.err.println ("After whole string, returinging with buildder at " + out.toString());
         return -1;
     }
 
@@ -317,8 +336,7 @@ public class Emitter
      *            Starting position.
      * @return The Token.
      */
-    public MarkToken getToken(final String in, final int pos)
-    {
+    public MarkToken getToken(final String in, final int pos)  {
         final char c0 = pos > 0 ? whitespaceToSpace(in.charAt(pos - 1)) : ' ';
         final char c = whitespaceToSpace(in.charAt(pos));
         final char c1 = pos + 1 < in.length() ? whitespaceToSpace(in.charAt(pos + 1)) : ' ';
@@ -329,7 +347,7 @@ public class Emitter
         case '{':
 	    return MarkToken.CITE;
         case '!':
-            if(c1 == '[') {
+            if (c1 == '[') {
 		return MarkToken.NONE;
 	    } else if (c1 == '{') {
 		return MarkToken.QUOTE;

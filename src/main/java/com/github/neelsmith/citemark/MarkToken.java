@@ -27,5 +27,5 @@ public enum MarkToken
     CITE,               // {
     QUOTE,              // !{
     LINK,               // [
-    IMAGE               // ![
+    CLOSECITE           // }
 }
