@@ -1,0 +1,4 @@
+ext {
+    junitVersion = '4.8.2'
+    xmlunitVersion = '1.3'
+}

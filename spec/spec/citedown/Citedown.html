@@ -1,0 +1,57 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+<head>
+<link href="../../concordion.css" rel="stylesheet" type="text/css" />
+<title>Citedown</title>
+</head>
+<body>
+<h1>Markdown with support for CITE URNs</h1>
+<h2>Overview</h2>
+<p>Citedown is a convention for citing and quoting
+scholarly material in markdown documents using URN notation.
+</p>
+<p><em>Citation</em> is a reference to an external resource.
+<em>Quotation</em>
+is a reference to content that should be incorporated into the source document.
+</p>
+
+<h2>Defining URN content for citation and quotation</h2>
+<p>
+</p>
+
+<h2>Quoting content</h2>
+<p>
+The string <code>!{</code>
+opens a quotation pattern.
+</p>
+
+<div class="example">
+  <h3>Examples</h3>
+  <p>The citedown string
+  <code concordion:set="#quote">Quote this !{passage
+  of text}[1]. </code>
+  
+  <strong concordion:assertTrue="hasQuote(#quote)">contains a quote</strong>.
+  
+
+  </p>
+</div>
+
+<h2>Citing content</h2>
+<p>When not preceded by a <code>!</code> character,
+<code>{</code>
+opens a citation pattern.
+</p>
+
+<div class="example">
+  <h3>Examples</h3>
+    <p>The citedown string 
+  <code concordion:set="#cite">Cite this {passage
+  of text}[1]. </code>
+  <strong concordion:assertTrue="hasCite(#cite)">contains a citation</strong>
+  </p>
+</div>
+
+<p>Configuration allows distinction of extensions such as CITE images.</p>
+
+</body>
+</html>

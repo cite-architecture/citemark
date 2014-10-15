@@ -1,0 +1,53 @@
+apply plugin: "java"
+
+apply from: "versions.gradle"
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+  testCompile 'junit:junit:4.11'
+  testCompile 'org.concordion:concordion:1.4.4'
+  testCompile group :'xmlunit', name: 'xmlunit', version: xmlunitVersion
+}
+
+
+
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'src'
+        }
+    }
+    test {
+        java {
+            srcDir "${buildDir}/spec"
+        }
+        resources {
+            srcDir "${buildDir}/spec"
+        }
+    }
+}
+
+
+task copySpecs(type: Copy) {
+  from "spec"
+  into "${buildDir}/spec"
+}
+
+// Make all testing depend on a filter copy to buildDir.
+// If that works, make all testing depned on a md -> html xform,
+// and write specs in markdown.
+test.dependsOn  copySpecs
+
+test {
+    systemProperties 'concordion.output.dir': file("${buildDir}/concordion-results")
+
+}
+
+
