@@ -96,15 +96,16 @@ public class Emitter {
     }
 
     public void indexLine(String line) {
-	System.err.println ("Check " + line + " for link reff.");
-	// check for up to 3 spaces?
-	if (line.charAt(0) == '[') {
-	    // read until ']'
-	    // look for :
-	    // collect URN and optional title
-	    // add to this object's hash 
+	if (line.length() > 0) {
+	    System.err.println ("Check  for link reff: " + line);
+	    // check for up to 3 spaces?
+	    if (line.charAt(0) == '[') {
+		// read until ']'
+		// look for :
+		// collect URN and optional title
+		// add to this object's hash 
+	    }
 	}
-
 	/*
 	    if (id != null && line.pos + 2 < line.value.length()) {
 		// Check for ':' ([...]:...)
@@ -148,22 +149,56 @@ public class Emitter {
     }
 
 
+
+
     public void indexLinkReff(String txt) 
 	throws Exception {
 	// accumulate txt by line, and check
 	// for link def patterns
 	int pos = 0;
 	StringBuilder line = new StringBuilder();
+	boolean multiLine = false;
 	while (pos < txt.length()) {
 	    final char ch = txt.charAt(pos);
 	    // check for CRLF as well...
-	    if (ch == '\n') {
-		indexLine(line.toString());
-		line.setLength(0);
+	    // NEED TO CHECK FOR MULTI-LINE LINK DEFINITION
+	    // Only index line when we've got whole thing.
+	    //if ((ch == '\n') || (ch == '\r')) {
+	    if ((ch == '\n') ) {
+		int blanks = 0;
+		boolean inContent = false;
+		//System.err.println ("Found line break..");
+		while (! inContent) {
+		    pos++;
+		    char nxtCh = txt.charAt(pos);
+		    //		    if ((nxtCh == '\n') || (nxtCh == '\r')) {
+		    if ((nxtCh == '\n') ) {
+			blanks++;
+		    } else {
+			inContent = true;
+		    }
+		}
+		//System.err.println ("Total blank lines: " + blanks + " at |" + line.toString() + "|" + " (mulit? " + multiLine + ")") ;
+
+		if (blanks > 0) {
+		    //System.err.println("Index single line: " + line.toString());
+		    indexLine(line.toString());
+		    line.setLength(0);
+
+		} else {
+		    if (multiLine == true) {
+			//System.err.println ("Index multiline: " + line.toString());
+			indexLine(line.toString());
+			line.setLength(0);
+		    }
+		    multiLine = true;
+		}
+
+	    } else {
+		line.append(ch);
+		pos++;
 	    }
 
-	    line.append(ch);
-	    pos++;
 	}
     }
 
