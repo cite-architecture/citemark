@@ -18,12 +18,17 @@ package com.github.neelsmith.citemark;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.io.StringReader;
+
 
 /**
  * Emitter class responsible for generating generic markdown output.
  * 
  */
 public class Emitter {
+
+    LinkRef lastLinkRef = null;
+
     /** Link references. */
     public final HashMap<String, LinkRef> linkRefs = new HashMap<String, LinkRef>();
 
@@ -90,6 +95,77 @@ public class Emitter {
         return -1;
     }
 
+    public void indexLine(String line) {
+	System.err.println ("Check " + line + " for link reff.");
+	// check for up to 3 spaces?
+	if (line.charAt(0) == '[') {
+	    // read until ']'
+	    // look for :
+	    // collect URN and optional title
+	    // add to this object's hash 
+	}
+
+	/*
+	    if (id != null && line.pos + 2 < line.value.length()) {
+		// Check for ':' ([...]:...)
+		if (line.value.charAt(line.pos + 1) == ':') {
+		    line.pos += 2;
+		    line.skipSpaces();
+		    // Check for link syntax
+		    System.err.println("Reading for link reff: found link " + link.toString() );
+		    // Is link valid?
+		    if (link != null) {
+			// Any non-whitespace characters following?
+			if (line.skipSpaces())  {
+			    final char ch = line.value.charAt(line.pos);
+			    // Read comment
+			    if(ch == '\"' || ch == '\'' || ch == '(') {
+				line.pos++;
+				comment = line.readUntil(ch == '(' ? ')' : ch);
+				// Valid linkRef only if comment is valid
+				if (comment != null) {
+				    isLinkRef = true;
+				}
+			    }
+			} else {
+			    isLinkRef = true;
+                        }
+                    }
+                }
+
+            }
+
+	    // To make compiler happy: add != null checks
+	    if (isLinkRef && id != null && link != null) {
+		final LinkRef lr = new LinkRef(link, comment, comment != null
+					       && (link.length() == 1 && link.charAt(0) == '*'));
+		this.addLinkRef(id, lr);
+		if(comment == null) {
+		    lastLinkRef = lr;
+		}
+
+	 */
+    }
+
+
+    public void indexLinkReff(String txt) 
+	throws Exception {
+	// accumulate txt by line, and check
+	// for link def patterns
+	int pos = 0;
+	StringBuilder line = new StringBuilder();
+	while (pos < txt.length()) {
+	    final char ch = txt.charAt(pos);
+	    // check for CRLF as well...
+	    if (ch == '\n') {
+		indexLine(line.toString());
+		line.setLength(0);
+	    }
+
+	    line.append(ch);
+	    pos++;
+	}
+    }
 
 
     public String getLinkReference(final String in, int start)  {
@@ -99,17 +175,11 @@ public class Emitter {
         temp.setLength(0);
         pos = Utils.readMdLinkId(temp, in, pos);
         if (pos < start) {
-	    System.err.println("compared pos " + pos + " with start " + start);
 	    System.err.println("Could not read link from " + in + " from index " + start);
-
             return "";
 	}
-	System.err.println("Read mdlink up to " + pos + " from " + in );
 	// The three components of a link:
         String name = temp.toString();
-	String link = null; 
-	String comment = null;
-
 	return (name);
     }
 

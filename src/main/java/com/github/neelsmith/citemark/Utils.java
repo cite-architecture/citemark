@@ -198,7 +198,6 @@ public class Utils {
 		}*/
                 break;
             default:
-		System.err.println ("Default, appending " + ch);
                 out.append(ch);
                 break;
             }
@@ -207,7 +206,7 @@ public class Utils {
 	    }
             pos++;
         }
-	System.err.println ("Utils: found link ID " + out.toString() + " and now pos is " + pos + ", cf length examined " + in.length());
+	//System.err.println ("Utils: found link ID " + out.toString() + " and now pos is " + pos + ", cf length examined " + in.length());
         return (pos == in.length()) ? -1 : pos;
     }
 
