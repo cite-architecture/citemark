@@ -89,8 +89,8 @@ Paragraph includes a {link to a URN citation}[1].
   
   </pre>
 
-  <p>The parser can resolve a reference <code>[1]</code> to the urn
-  <code concordion:assertEquals="resolveRef(#doc)">urn:cts:greekLit:tlg0012.tlg001.msA:1.1</code>
+  <p>The parser can resolve a reference [<code concordion:set="#linkref">1</code>] to the urn
+  <code concordion:assertEquals="resolveRef(#doc, #linkref)">urn:cts:greekLit:tlg0012.tlg001.msA:1.1</code>
   </p>
 </div>
   

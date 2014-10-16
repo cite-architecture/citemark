@@ -20,8 +20,8 @@ package com.github.neelsmith.citemark;
  * 
  * @author René Jeschke <rene_jeschke@yahoo.de>
  */
-class LinkRef
-{
+public class LinkRef {
+
     /** The link. */
     public final String link;
     /** The optional comment/title. */
@@ -43,6 +43,12 @@ class LinkRef
         this.title = title;
         this.isAbbrev = isAbbrev;
     }
+
+
+
+
+
+
 
     /** @see java.lang.Object#toString() */
     @Override

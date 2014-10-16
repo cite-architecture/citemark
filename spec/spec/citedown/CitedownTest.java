@@ -30,15 +30,16 @@ public class CitedownTest extends ConcordionTestCase {
 	return false;
     }
 
-    public String resolveRef(String citedown) {
+    public String resolveRef(String citedown, String ref) {
+	System.err.println("Resolve ref in: " + citedown + "\n for ref " + ref);
 	Emitter emitter = new Emitter();
 	try {
 	    emitter.indexLinkReff(citedown);
 	} catch (Exception e) {
 	    System.err.println ("Exception indexing links: " + e.toString());
 	}
-	System.err.println ("Indexed link reff: " + emitter.linkRefs);
-	return "";
+	LinkRef refObj = emitter.linkRefs.get(ref);
+	return refObj.link;
     }
 
     public String findLink(String citedown) {

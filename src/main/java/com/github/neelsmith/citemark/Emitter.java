@@ -86,8 +86,7 @@ public class Emitter {
     public int findToken(final String in, int start, MarkToken token)
     {
         int pos = start;
-        while(pos < in.length())
-        {
+        while(pos < in.length()) {
             if(this.getToken(in, pos) == token)
                 return pos;
             pos++;
@@ -100,52 +99,32 @@ public class Emitter {
 	    System.err.println ("Check  for link reff: " + line);
 	    // check for up to 3 spaces?
 	    if (line.charAt(0) == '[') {
+		StringBuilder linkId = new StringBuilder();
+		StringBuilder urn = new StringBuilder();
+		StringBuilder caption = new StringBuilder();
 		// read until ']'
-		// look for :
-		// collect URN and optional title
-		// add to this object's hash 
+		int idx = Utils.readUntil(linkId, line, 1, ']') ;
+		System.err.println("Found linkId: " + linkId);
+		idx++;
+		if (line.charAt(idx) == ':') {
+		    idx++;
+		    while ((line.charAt(idx) == ' ') && (idx < line.length())) {
+			idx++;
+		    }
+		    idx = Utils.readUntil(urn,line,idx,' ','\n');
+		}
+		// consume space, with quote:
+		while ((line.charAt(idx) == ' ') || (line.charAt(idx) == '"') || (line.charAt(idx) == '\n')) {
+		    idx++;
+		}
+		idx = Utils.readUntil(caption,line,idx,'"','\n');
+
+		System.err.println ("Linkid: " + linkId + ", urn " + urn + ", caption " + caption);
+
+		final LinkRef lr = new LinkRef(urn.toString(), caption.toString(), false);
+		this.addLinkRef(linkId.toString(), lr);
 	    }
 	}
-	/*
-	    if (id != null && line.pos + 2 < line.value.length()) {
-		// Check for ':' ([...]:...)
-		if (line.value.charAt(line.pos + 1) == ':') {
-		    line.pos += 2;
-		    line.skipSpaces();
-		    // Check for link syntax
-		    System.err.println("Reading for link reff: found link " + link.toString() );
-		    // Is link valid?
-		    if (link != null) {
-			// Any non-whitespace characters following?
-			if (line.skipSpaces())  {
-			    final char ch = line.value.charAt(line.pos);
-			    // Read comment
-			    if(ch == '\"' || ch == '\'' || ch == '(') {
-				line.pos++;
-				comment = line.readUntil(ch == '(' ? ')' : ch);
-				// Valid linkRef only if comment is valid
-				if (comment != null) {
-				    isLinkRef = true;
-				}
-			    }
-			} else {
-			    isLinkRef = true;
-                        }
-                    }
-                }
-
-            }
-
-	    // To make compiler happy: add != null checks
-	    if (isLinkRef && id != null && link != null) {
-		final LinkRef lr = new LinkRef(link, comment, comment != null
-					       && (link.length() == 1 && link.charAt(0) == '*'));
-		this.addLinkRef(id, lr);
-		if(comment == null) {
-		    lastLinkRef = lr;
-		}
-
-	 */
     }
 
 
@@ -153,6 +132,7 @@ public class Emitter {
 
     public void indexLinkReff(String txt) 
 	throws Exception {
+	System.err.println ("Indexing link reff in " + txt);
 	// accumulate txt by line, and check
 	// for link def patterns
 	int pos = 0;
@@ -161,8 +141,6 @@ public class Emitter {
 	while (pos < txt.length()) {
 	    final char ch = txt.charAt(pos);
 	    // check for CRLF as well...
-	    // NEED TO CHECK FOR MULTI-LINE LINK DEFINITION
-	    // Only index line when we've got whole thing.
 	    //if ((ch == '\n') || (ch == '\r')) {
 	    if ((ch == '\n') ) {
 		int blanks = 0;
