@@ -13,7 +13,6 @@ public class CitedownTest extends ConcordionTestCase {
 	StringBuilder builtMarkdown = new StringBuilder();
 	Emitter emitter = new Emitter();
         int res = emitter.recursiveEmitLine(builtMarkdown,markdown,0,MarkToken.NONE);
-	System.err.println("BUILT: " + builtMarkdown.toString());
 	return (builtMarkdown.toString().equals(markdown));
     }
 
@@ -31,8 +30,18 @@ public class CitedownTest extends ConcordionTestCase {
 	return false;
     }
 
+    public String resolveRef(String citedown) {
+	
+	return "";
+    }
 
-
+    public String findLink(String citedown) {
+	Emitter emitter = new Emitter();
+	int start = emitter.findToken(citedown,0,MarkToken.LINK);
+	String linkRef = emitter.getLinkReference(citedown,start);
+	System.err.println("Looked in " + citedown + " and got " + linkRef);
+	return  linkRef;
+    }
 
     public boolean processLine(String citedown) {
 	Emitter emitter = new Emitter();
@@ -53,7 +62,7 @@ public class CitedownTest extends ConcordionTestCase {
             if (mt == MarkToken.CITE) {
                 return true;
 	    } else {
-		System.err.println ("At char " +  pos + ", got token " + mt.toString());
+		//System.err.println ("At char " +  pos + ", got token " + mt.toString());
 	    }
             pos++;
         }
@@ -67,7 +76,7 @@ public class CitedownTest extends ConcordionTestCase {
 	//Emitter emitter = new Emitter(Configuration.DEFAULT);
 	Emitter emitter = new Emitter();
 	MarkToken mToken = emitter.getToken(tokenStr, 0);
-	System.err.println ("GOt tokekn " + mToken.toString());
+	//System.err.println ("GOt tokekn " + mToken.toString());
 	return false;
     }
 

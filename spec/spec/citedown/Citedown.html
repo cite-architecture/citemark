@@ -42,7 +42,15 @@ closed by <code>]</code>.
   </p>
 
   <p>
-  Something should <strong concordion:assertTrue="processLine(#quote)">happen here</strong>.
+  It refers to a link definition
+<strong concordion:assertEquals="findLink(#quote)">1</strong>.
+  </p>
+
+  <p>Standard markdown for cited image like this line
+  <code concordion:set="#img">Embed image ![caption][1]. </code>
+  is
+<strong concordion:assertTrue="mdOK(#img)">
+  passed through unchanged</strong>.
   </p>
 </div>
 
@@ -60,17 +68,40 @@ opens a citation pattern.
   <strong concordion:assertTrue="hasCite(#cite)">contains a citation</strong>
   </p>
 
-<p>Standard markdown for cited image like this line
-  <code concordion:set="#img">Embed image ![caption][1]. </code>
-  is
-<strong concordion:assertTrue="mdOK(#img)">
-  passed through unchanged</strong>.
-  </p>
+
   
 </div>
+
+
+<h2>Parsing link definitions</h2>
+<p>Citedown links are defined using markdown's standard link
+definition syntax, except that URNs are used instead of URLs.
+</p>
+
+<div class="example">
+<p>Consider the following brief citedown document.</p>
+  <pre concordion:set="#doc">##Test document##
+
+Paragraph includes a {link to a URN citation}[1].
+
+[1]: urn:cts:greekLit:tlg0012.tlg001.msA:1.1 "Iliad 1.1 in the
+  Venetus A"
+  
+  </pre>
+
+  <p>The parser can resolve a reference <code>[1]</code> to the urn
+  <code concordion:assertEquals="resolveRef(#doc)">urn:cts:greekLit:tlg0012.tlg001.msA:1.1</code>
+  </p>
+</div>
+  
+
+
 
 <h2>Mapping URNs to services</h2>
 <p>Configuration allows distinction of extensions such as CITE images.</p>
 
+
+<h2>Options</h2>
+<p>Bibliography option from link definitions.</p>
 </body>
 </html>

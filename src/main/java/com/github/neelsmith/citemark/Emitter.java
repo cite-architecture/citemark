@@ -23,8 +23,7 @@ import java.util.HashMap;
  * Emitter class responsible for generating generic markdown output.
  * 
  */
-public class Emitter
-{
+public class Emitter {
     /** Link references. */
     public final HashMap<String, LinkRef> linkRefs = new HashMap<String, LinkRef>();
 
@@ -52,15 +51,18 @@ public class Emitter
         this.linkRefs.put(key.toLowerCase(), linkRef);
     }
 
-    /**
+    //
+    /*
      * Transforms the given block recursively into HTML.
      * 
      * @param out
      *            The StringBuilder to write to.
      * @param root
      *            The Block to process.
+     //public void emit(final StringBuilder out, final Block root) {
      */
-    //public void emit(final StringBuilder out, final Block root) {
+
+    /** Empty constructor. */
     public void emit() {
     }
 
@@ -76,7 +78,7 @@ public class Emitter
      *            The token to find.
      * @return The position of the token or -1 if none could be found.
      */
-    private int findToken(final String in, int start, MarkToken token)
+    public int findToken(final String in, int start, MarkToken token)
     {
         int pos = start;
         while(pos < in.length())
@@ -87,6 +89,30 @@ public class Emitter
         }
         return -1;
     }
+
+
+
+    public String getLinkReference(final String in, int start)  {
+        boolean isAbbrev = false;
+        int pos = start ;
+        final StringBuilder temp = new StringBuilder();
+        temp.setLength(0);
+        pos = Utils.readMdLinkId(temp, in, pos);
+        if (pos < start) {
+	    System.err.println("compared pos " + pos + " with start " + start);
+	    System.err.println("Could not read link from " + in + " from index " + start);
+
+            return "";
+	}
+	System.err.println("Read mdlink up to " + pos + " from " + in );
+	// The three components of a link:
+        String name = temp.toString();
+	String link = null; 
+	String comment = null;
+
+	return (name);
+    }
+
 
     /**
      * Checks if there is a valid markdown link definition.
@@ -101,7 +127,7 @@ public class Emitter
      *            Either LINK or IMAGE.
      * @return The new position or -1 if there is no valid markdown link.
      */
-    private int checkLink(final StringBuilder out, final String in, int start, MarkToken token)  {
+    public int checkLink(final StringBuilder out, final String in, int start, MarkToken token)  {
         boolean isAbbrev = false;
         int pos = start + (token == MarkToken.LINK ? 1 : 2);
         final StringBuilder temp = new StringBuilder();
@@ -111,13 +137,18 @@ public class Emitter
         if (pos < start) {
             return -1;
 	}
-        String name = temp.toString(), link = null, comment = null;
+	// The three components of a link:
+        String name = temp.toString();
+	String link = null; 
+	String comment = null;
+
+
         final int oldPos = pos++;
         pos = Utils.skipSpaces(in, pos);
 	// skip ahead to content:
         if (pos < start) {
             final LinkRef lr = this.linkRefs.get(name.toLowerCase());
-            if(lr != null) {
+            if (lr != null) {
                 isAbbrev = lr.isAbbrev;
                 link = lr.link;
                 comment = lr.title;
@@ -128,6 +159,7 @@ public class Emitter
 
 
 	    // check for explicit URL
+	    /*
         } else if (in.charAt(pos) == '(')   {
             pos++;
             pos = Utils.skipSpaces(in, pos);
@@ -165,6 +197,7 @@ public class Emitter
 	    }
 
 
+	    */
 
 	    // check for reference link
         } else if(in.charAt(pos) == '[')  {
@@ -175,14 +208,13 @@ public class Emitter
                 return -1;
             final String id = temp.length() > 0 ? temp.toString() : name;
             final LinkRef lr = this.linkRefs.get(id.toLowerCase());
-            if(lr != null)  {
+            if (lr != null)  {
                 link = lr.link;
                 comment = lr.title;
             }
         } else   {
             final LinkRef lr = this.linkRefs.get(name.toLowerCase());
-            if(lr != null)
-            {
+            if (lr != null)   {
                 isAbbrev = lr.isAbbrev;
                 link = lr.link;
                 comment = lr.title;
@@ -274,7 +306,7 @@ public class Emitter
         while(pos < in.length()) {
             final MarkToken mt = this.getToken(in, pos);
             if (token != MarkToken.NONE) {
-		System.err.println ("At char " + pos + ", returinging with buildder at " + out.toString());
+		//System.err.println ("At char " + pos + ", returinging with buildder at " + out.toString());
                 return pos;
 	    }
 	    //	    if ((mt == MarkToken.IMAGE) || (mt == MarkToken.LINK)) {
@@ -301,17 +333,17 @@ public class Emitter
 		}
 
 		int nxt = Utils.readUntil(out, in, pos + 1, '}' );
-		System.err.println("Found '}' at " + nxt);
+		//System.err.println("Found '}' at " + nxt);
 		out.append("]");
 		pos = nxt;
 
 	    } else {
-		System.err.println ("At char " + pos + ", handle token " + mt.toString());
+		//System.err.println ("At char " + pos + ", handle token " + mt.toString());
                 out.append(in.charAt(pos));
 	    }
             pos++;
         }
-	System.err.println ("After whole string, returinging with buildder at " + out.toString());
+	//System.err.println ("After whole string, returinging with buildder at " + out.toString());
         return -1;
     }
 

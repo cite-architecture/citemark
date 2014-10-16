@@ -120,31 +120,45 @@ public class Utils {
      *            Starting position.
      * @return The new position or -1 if this is no valid markdown link.
      */
-    public final static int readMdLink(final StringBuilder out, final String in, final int start)
-    {
+    // NO NEED?
+    /*
+    public final static int readMdLink(final StringBuilder out, final String in, final int start)  {
+
         int pos = start;
         int counter = 1;
         while (pos < in.length()) {
             final char ch = in.charAt(pos);
 	    boolean endReached = false;
 	    switch (ch) {
+
 	    case '(':
 		counter++;
 		break;
+
 	    case ' ':
-		if (counter == 1) endReached = true;
+		if (counter == 1) {
+		    endReached = true;
+		}
 		break;
+
 	    case ')':
 		counter--;
-		if (counter == 0) endReached = true;
+		if (counter == 0) {
+		    endReached = true;
+		}
 		break;
 	    }
-	    if (endReached) break;
+
+	    if (endReached) {
+		break;
+	    }
+	    System.err.println ("At " + pos + " in " + in + ", appending " + ch);
 	    out.append(ch);
-	pos++;
+	    pos++;
 	}
         return (pos == in.length()) ? -1 : pos;
     }
+    */
 
     /**
      * Reads a markdown link ID.
@@ -169,21 +183,31 @@ public class Utils {
                 break;
             case '[':
                 counter++;
-                out.append(ch);
+                //out.append(ch);
                 break;
             case ']':
+		endReached = true;
                 counter--;
-                if (counter == 0)
+		/*
+                if (counter == 0) {
                     endReached = true;
-                else out.append(ch);
+		}  else {
+		    System.err.println ("At counter 0, saw " + ch);
+
+		    //out.append(ch);
+		}*/
                 break;
             default:
+		System.err.println ("Default, appending " + ch);
                 out.append(ch);
                 break;
             }
-            if (endReached) break;
+            if (endReached) {
+		break;
+	    }
             pos++;
         }
+	System.err.println ("Utils: found link ID " + out.toString() + " and now pos is " + pos + ", cf length examined " + in.length());
         return (pos == in.length()) ? -1 : pos;
     }
 
