@@ -1,5 +1,5 @@
 /*
- * Based on com.github.rjeschke.txtmark.Emitter,
+ * Based in part on com.github.rjeschke.txtmark.Emitter,
  * copyright (c) 2011 René Jeschke <rene_jeschke@yahoo.de>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,10 +22,10 @@ import java.io.StringReader;
 
 
 /**
- * Emitter class responsible for generating generic markdown output.
+ * A class for converting citedown to generic markdown. 
  * 
  */
-public class Emitter {
+public class Converter {
 
     /** Link references. */
     public final HashMap<String, LinkRef> linkRefs = new HashMap<String, LinkRef>();
@@ -36,7 +36,7 @@ public class Emitter {
 
 
     /** Constructor. */
-    public Emitter()  {
+    public Converter()  {
     }
 
 
@@ -82,8 +82,8 @@ public class Emitter {
         this.linkRefs.put(key.toLowerCase(), linkRef);
     }
 
-    /** Empty constructor. */
-    public void emit() {
+
+    public void convert() {
     }
 
 

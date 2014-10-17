@@ -11,13 +11,13 @@ public class CitedownTest extends ConcordionTestCase {
     // check that marrkdown passed through unchanged
     public boolean mdOK(String markdown) {
 	StringBuilder builtMarkdown = new StringBuilder();
-	Emitter emitter = new Emitter();
+	Converter emitter = new Converter();
         int res = emitter.recursiveEmitLine(builtMarkdown,markdown,0,MarkToken.NONE);
 	return (builtMarkdown.toString().equals(markdown));
     }
 
     public boolean hasQuote(String citedown) {
-	Emitter emitter = new Emitter();
+	Converter emitter = new Converter();
         int pos = 0;
 
         while (pos < citedown.length()) {
@@ -32,7 +32,7 @@ public class CitedownTest extends ConcordionTestCase {
 
     public String resolveRef(String citedown, String ref) {
 	System.err.println("Resolve ref in: " + citedown + "\n for ref " + ref);
-	Emitter emitter = new Emitter();
+	Converter emitter = new Converter();
 	try {
 	    emitter.indexLinkReff(citedown);
 	} catch (Exception e) {
@@ -43,14 +43,14 @@ public class CitedownTest extends ConcordionTestCase {
     }
 
     public String findLink(String citedown) {
-	Emitter emitter = new Emitter();
+	Converter emitter = new Converter();
 	int start = emitter.findToken(citedown,0,MarkToken.LINK);
 	String linkRef = emitter.getLinkReference(citedown,start);
 	return  linkRef;
     }
 
     public boolean processLine(String citedown) {
-	Emitter emitter = new Emitter();
+	Converter emitter = new Converter();
         int res = emitter.recursiveEmitLine(new StringBuilder(),citedown,0,MarkToken.NONE);
 
 	return false;
@@ -60,7 +60,7 @@ public class CitedownTest extends ConcordionTestCase {
 
 
     public boolean hasCite(String citedown) {
-	Emitter emitter = new Emitter();
+	Converter emitter = new Converter();
         int pos = 0;
 
         while (pos < citedown.length()) {
@@ -79,8 +79,8 @@ public class CitedownTest extends ConcordionTestCase {
 
 
     public boolean typeForString(String tokenStr) {
-	//Emitter emitter = new Emitter(Configuration.DEFAULT);
-	Emitter emitter = new Emitter();
+	//Converter emitter = new Converter(Configuration.DEFAULT);
+	Converter emitter = new Converter();
 	MarkToken mToken = emitter.getToken(tokenStr, 0);
 	//System.err.println ("GOt tokekn " + mToken.toString());
 	return false;
