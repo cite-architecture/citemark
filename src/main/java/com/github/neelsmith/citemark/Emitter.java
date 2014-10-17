@@ -27,72 +27,71 @@ import java.io.StringReader;
  */
 public class Emitter {
 
-    LinkRef lastLinkRef = null;
-
     /** Link references. */
     public final HashMap<String, LinkRef> linkRefs = new HashMap<String, LinkRef>();
 
-    /** The configuration. */
-    //private final Configuration config;
+
+    /** CITE service installations to use. */
+    public final HashMap<String, Service> services = new HashMap<String, Service>();
+
 
     /** Constructor. */
     public Emitter()  {
     }
-    /*
-    public Emitter(final Configuration config)  {
-        this.config = config;
-	}*/
 
-    /**
-     * Adds a LinkRef to this set of LinkRefs.
-     * 
-     * @param key
-     *            The key/id.
-     * @param linkRef
-     *            The LinkRef.
+
+    /** Add a CTS to the map of service installations.
+     * @param baseUrn The base URN of the service.
      */
-    public void addLinkRef(final String key, final LinkRef linkRef)
-    {
-        this.linkRefs.put(key.toLowerCase(), linkRef);
+    public void addCts(String baseUrn) {
+	String getPassagePlus = baseUrn + "?request=GetPassagePlus&urn=";
+	Service cts = new Service("cts", getPassagePlus, getPassagePlus);
+	this.services.put("cts", cts);
     }
 
-    //
-    /*
-     * Transforms the given block recursively into HTML.
-     * 
-     * @param out
-     *            The StringBuilder to write to.
-     * @param root
-     *            The Block to process.
-     //public void emit(final StringBuilder out, final Block root) {
+
+
+    /** Add a CITE Collection Service to the map of service installations.
+     * @param baseUrn The base URN of the service.
      */
+    public void addCollectionService(String baseUrn) {
+	String getObjectPlus = baseUrn + "?request=GetObjectPlus&urn=";
+	Service cite = new Service("cite", getObjectPlus, getObjectPlus);
+	this.services.put("cite", cite);
+    }
+
+
+    /** Add a CITE Image Extension to the map of service installations.
+     * @param baseUrn The base URN of the service.
+     */
+    public void addImageExtension(String baseUrn) {
+	String getImagePlus = baseUrn + "?request=GetImagePlus&urn=";
+	String getBinaryImage = baseUrn + "?request=GetBinaryImage&urn=";
+	Service image = new Service("image", getImagePlus, getImagePlus);
+	this.services.put("image", image);
+    }
+
+    /**
+     * Adds a LinkRef to this set of LinkRefs, using
+     * all lower-case for the map key.
+     * 
+     * @param key  The map key.
+     * @param linkRef    The LinkRef to add.
+     */
+    public void addLinkRef(final String key, final LinkRef linkRef)  {
+        this.linkRefs.put(key.toLowerCase(), linkRef);
+    }
 
     /** Empty constructor. */
     public void emit() {
     }
 
 
-    /**
-     * Finds the position of the given Token in the given String.
-     * 
-     * @param in
-     *            The String to search on.
-     * @param start
-     *            The starting character position.
-     * @param token
-     *            The token to find.
-     * @return The position of the token or -1 if none could be found.
-     */
-    public int findToken(final String in, int start, MarkToken token)
-    {
-        int pos = start;
-        while(pos < in.length()) {
-            if(this.getToken(in, pos) == token)
-                return pos;
-            pos++;
-        }
-        return -1;
-    }
+
+
+
+
+
 
     public void indexLine(String line) {
 	if (line.length() > 0) {
@@ -129,7 +128,14 @@ public class Emitter {
 
 
 
-
+    /** Scans all of txt for link definitions, including for
+     * multiline link definitions, and passes them to
+     * indexLine method for processing.
+     *
+     * @param txt The citedown text to scan for link
+     * definitions.
+     *
+     */
     public void indexLinkReff(String txt) 
 	throws Exception {
 	System.err.println ("Indexing link reff in " + txt);
@@ -181,6 +187,10 @@ public class Emitter {
     }
 
 
+
+
+    /**
+     */
     public String getLinkReference(final String in, int start)  {
         boolean isAbbrev = false;
         int pos = start ;
@@ -241,48 +251,6 @@ public class Emitter {
             }
 
 
-	    // check for explicit URL
-	    /*
-        } else if (in.charAt(pos) == '(')   {
-            pos++;
-            pos = Utils.skipSpaces(in, pos);
-            if (pos < start) {
-                return -1;
-	    }
-            temp.setLength(0);
-            boolean useLt = in.charAt(pos) == '<';
-            pos = useLt ? Utils.readUntil(temp, in, pos + 1, '>') : Utils.readMdLink(temp, in, pos);
-            if(pos < start)
-                return -1;
-            if(useLt)
-                pos++;
-            link = temp.toString();
-
-            if(in.charAt(pos) == ' ') {
-                pos = Utils.skipSpaces(in, pos);
-                if(pos > start && in.charAt(pos) == '"') {
-                    pos++;
-                    temp.setLength(0);
-                    pos = Utils.readUntil(temp, in, pos, '"');
-                    if(pos < start) {
-                        return -1;
-		    }
-                    comment = temp.toString();
-                    pos++;
-                    pos = Utils.skipSpaces(in, pos);
-                    if (pos == -1) {
-                        return -1;
-		    }
-		}
-	    }
-	    if (in.charAt(pos) != ')') {
-                return -1;
-	    }
-
-
-	    */
-
-	    // check for reference link
         } else if(in.charAt(pos) == '[')  {
             pos++;
             temp.setLength(0);
@@ -318,51 +286,11 @@ public class Emitter {
 	// PROCESS LINK:
         if (token == MarkToken.LINK)  {
             if (isAbbrev && comment != null)      {
-                //if(!this.useExtensions)
-		//  return -1;
-		/*
-                out.append("<abbr title=\"");
-                Utils.appendValue(out, comment, 0, comment.length());
-                out.append("\">");
-                this.recursiveEmitLine(out, name, 0, MarkToken.NONE);
-                out.append("</abbr>");
-		*/
-
 
             } else  {
-		/*
-                this.config.decorator.openLink(out);
-                out.append(" href=\"");
-                Utils.appendValue(out, link, 0, link.length());
-                out.append('"');
-                if(comment != null) {
-                    out.append(" title=\"");
-                    Utils.appendValue(out, comment, 0, comment.length());
-                    out.append('"');
-                }
-                out.append('>');
-                this.recursiveEmitLine(out, name, 0, MarkToken.NONE);
-                this.config.decorator.closeLink(out);
-		*/
 	    }
 
         } else   {
-	    // if not a link, then an iimage
-	    /*
-            this.config.decorator.openImage(out);
-            out.append(" src=\"");
-            Utils.appendValue(out, link, 0, link.length());
-            out.append("\" alt=\"");
-            Utils.appendValue(out, name, 0, name.length());
-            out.append('"');
-            if(comment != null)
-            {
-                out.append(" title=\"");
-                Utils.appendValue(out, comment, 0, comment.length());
-                out.append('"');
-            }
-            this.config.decorator.closeImage(out);
-	    */
         }
         return pos;
     }
@@ -548,4 +476,26 @@ public class Emitter {
             }
         }
 	}*/
+
+
+
+    /**
+     * Finds the position of the given Token in the given String.
+     * 
+     * @param in  The String to search.
+     * @param start The starting character position.
+     * @param token The token to find.
+     * @return The position of the token or -1 if none could be found.
+     */
+    public int findToken(final String in, int start, MarkToken token)  {
+        int pos = start;
+        while (pos < in.length()) {
+            if (this.getToken(in, pos) == token) {
+                return pos;
+	    }
+            pos++;
+        }
+        return -1;
+    }
+
 }
